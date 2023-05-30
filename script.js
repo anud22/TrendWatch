@@ -1,13 +1,10 @@
 
 const tmdbBaseUrl = "https://api.themoviedb.org/3";
 const youtubeBaseUrl = "https://www.googleapis.com/youtube/v3";
-const youtubeKey = "";
-const tmdbBearerToken = "";
+const youtubeKey = "AIzaSyCKdcqlaDtj8LmDrda7IVK4e15u8CXR";
+const tmdbBearerToken = "iJIUzI1NiJ9.eyJhdWQiOiIyZTlkYzljM2MzN2ZmM2ZiZTJiN2UxMDQwZDc3NzAwZCIsInN1YiI6IjY0NmQ2MzUwYzM1MTRjMmIwNjg4YjE3MiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.pr8RBLe8jShCpiIICdlyWgUKrvKJF08Oz_w7MYdECp8";
 const tmdbPhotosUrl = 'https://image.tmdb.org/t/p/';
-var tmdbVideoEndpoint = tmdbBaseUrl + "/movie/{movie_id}/videos";
-var youTubeVideoEndpoint = youtubeBaseUrl + "/videos?id={movie_id}&key={key}}&part=player";
 const imageSize = 'w300';
-const movieId = 502356;
 const movieKey = "8rHNp7cPUb0";
 
 var submit = $('#submit');
@@ -27,11 +24,9 @@ var searchMovies = function (event) {
                 'Accept': 'application/json'
             }
         }).then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Request failed.');
-            }
+
+            return response.json();
+
         })
         .then(data => {
             displayMoviesDetails(data.results);
@@ -39,7 +34,7 @@ var searchMovies = function (event) {
 }
 
 
-var displayMoviesDetails = function (results) {
+var displayMoviesDetails = async function (results) {
     if (results.length == 0) {
         alert('No search results returned');
         return;
@@ -50,20 +45,27 @@ var displayMoviesDetails = function (results) {
     for (var i = 0; i < results.length; ++i) {
         var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (results[i].poster_path || '')).attr('alt', 'Movie poster').addClass('w-72');
         movieContainer.append(poster);
-        var details = $('<div>').addClass('bg-gray-800 min-w-[20rem] mr-5 flex-col')
+        var details = $('<div>').addClass('bg-gray-800 min-w-[20rem] mr-5 flex-col');
         movieContainer.append(details);
         var name = $('<h1>').html(results[i].title || results[i].name).addClass("text-white p-3 text-2xl font-serif");
         details.append(name);
-        /**
-         * To add add more fields like overview,rating..
-         * 
-         */
         var buttonContainer = $('<div>');
         details.append(buttonContainer);
-        var playButton = $('<div>').addClass('ml-2 text-white text-4xl').attr('id', 'playBtn');
-        var playIcon = $('<i>').addClass('playIcon fas fa-play');
-        playButton.append(playIcon);
-        buttonContainer.append(playButton);
+        if (results[i].id) {
+            try {
+                const key = await getYoutubeVideoKey(results[i].id);
+                if (key) {
+                    var playButton = $('<div>').addClass('ml-2 text-white text-4xl').attr('id', 'playBtn');
+                    buttonContainer.append(playButton);
+                    var playIcon = $('<i>').addClass('playIcon fas fa-play');
+                    playIcon.attr('data-movie-key', key);
+                    playButton.append(playIcon);
+                }
+            } catch (error) {
+                console.error("Error fetching YouTube video key:", error);
+            }
+
+        }
     }
 }
 
@@ -78,33 +80,64 @@ var sortMoviesByReleaseDate = function (movies) {
 
 var playTrailer = function (event) {
     event.preventDefault();
-    youTubeModal.removeClass('hidden');
     var videoContainer = $('.video-container');
-    videoContainer.empty();
-   /* fetch(youTubeAPI).then(response => {
+    var playerContainer = $('#player');
+    if (playerContainer.length > 0) {
+        playerContainer.empty();
+    }
+    var playButton = $(event.target);
+    var movieId = playButton.attr('data-movie-key');
+    var player = $('<div>').attr('id', 'player');
+    var youTubeVideoEndpoint = youtubeBaseUrl + "/videos?id={movie_id}&key=" + youtubeKey + "&part=player";
+    youTubeVideoEndpoint = youTubeVideoEndpoint.replace("{movie_id}", movieId);
+    fetch(youTubeVideoEndpoint).then(response => {
         if (response.ok) {
+            youTubeModal.removeClass('hidden');
+            videoContainer.append(player);
             return response.json();
         } else {
             throw new Error('Request failed.');
         }
     })
         .then(data => {
-            // Process the data
-            return (console.log(data.items[0].player.embedHtml));
+            if (!data.items[0]) {
+                player.addClass('text-white font-italic');
+                player.html("Sorry Something went wrong. This video not present");
+                playButton.remove();
+            }
+            return (data.items[0].player.embedHtml);
         }).then(data => {
-            var player = $('<div>');
-            videoContainer.append(player);
+
             player.html(data);
 
-        })*/
-        var player = $('<div>').attr('id', player);
-        videoContainer.append(player);
-        player.html('<iframe width="680" height="760" src="//www.youtube.com/embed/SCBJJG_Ncl0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>');
-    //   $('.movie-container').html('<iframe width="480" height="270" src="//www.youtube.com/embed/SCBJJG_Ncl0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>');
+        })
 }
+
+var getYoutubeVideoKey = function (movieId) {
+    var tmdbVideoEndpoint = tmdbBaseUrl + "/movie/{movie_id}/videos";
+    tmdbVideoEndpoint = tmdbVideoEndpoint.replace("{movie_id}", movieId);
+    return fetch(tmdbVideoEndpoint, {
+        headers: {
+            'Authorization': `Bearer ${tmdbBearerToken}`,
+            'Accept': 'application/json'
+        }
+    }).then(response => response.json())
+        .then(data => {
+            const results = data.results;
+            if (!results || results.length === 0) {
+                return null;
+            }
+            return results[0].key;
+        })
+        .catch(error => {
+            console.error("Error fetching YouTube video key:", error);
+            throw error;
+        });
+}
+
 var hidePlayer = function () {
     var player = $('#player');
-    if(player.length > 0){
+    if (player.length > 0) {
         player.remove();
     }
     youTubeModal.addClass('hidden');
