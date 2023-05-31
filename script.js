@@ -1,11 +1,11 @@
 
 const tmdbBaseUrl = "https://api.themoviedb.org/3";
 const youtubeBaseUrl = "https://www.googleapis.com/youtube/v3";
-const youtubeKey = "";
+const youtubeKey = "AIzaSyCKdcqlaDtj8LmDrda7IVK4e15u8CXRFss";
 const tmdbBearerToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyZTlkYzljM2MzN2ZmM2ZiZTJiN2UxMDQwZDc3NzAwZCIsInN1YiI6IjY0NmQ2MzUwYzM1MTRjMmIwNjg4YjE3MiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.pr8RBLe8jShCpiIICdlyWgUKrvKJF08Oz_w7MYdECp8";
 const tmdbPhotosUrl = 'https://image.tmdb.org/t/p/';
 const imageSize = 'w300';
-const movieKey = "";
+const movieKey = "8rHNp7cPUb0";
 
 var submit = $('#submit');
 var play = $('#play');
@@ -13,8 +13,10 @@ var searchInput = $('#search');
 var movieContainer = $('.movie-container');
 var trendingContainer = $('.trending-container');
 var youTubeModal = $('#youTubeModal');
+var topMovies = $('#movies');
+var topTv = $('#tv');
 $(document).ready(function () {
-    getTopTrendingMovies();
+    //getTopTrendingMovies();
 });
 
 var searchMovies = function (event) {
@@ -173,7 +175,24 @@ var getTopTrendingMovies = function () {
         });
 }
 
+var getTopTv = function () {
+    var tmdbTopRatedTvEndpoint = tmdbBaseUrl + "/tv/top_rated?language=en-US&page=1";
+    fetch(tmdbTopRatedTvEndpoint,
+        {
+            headers: {
+                'Authorization': `Bearer ${tmdbBearerToken}`,
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            return response.json();
+        })
+        .then(data => {
+            displayMoviePosters(data.results);
+        });
+}
+
 var displayMoviePosters = function (results) {
+    trendingContainer.empty();
     console.log(results);
     for (var i = 0; i < results.length; ++i) {
         var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (results[i].poster_path || '')).attr('alt', 'Movie poster').addClass('w-60 m-4');
@@ -183,3 +202,6 @@ var displayMoviePosters = function (results) {
 submit.on('click', searchMovies);
 movieContainer.on('click', '#playBtn', playTrailer);
 youTubeModal.on('click', '#closeBtn', hidePlayer);
+topMovies.on('click', getTopTrendingMovies);
+topTv.on('click', getTopTv);
+
