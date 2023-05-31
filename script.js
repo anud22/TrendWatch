@@ -16,7 +16,7 @@ var youTubeModal = $('#youTubeModal');
 var topMovies = $('#movies');
 var topTv = $('#tv');
 $(document).ready(function () {
-    //getTopTrendingMovies();
+    getTopTrendingMovies();
 });
 
 var searchMovies = function (event) {
@@ -192,7 +192,7 @@ var getTopTv = function () {
 }
 
 var displayMoviePosters = function (results) {
-    trendingContainer.empty();
+   // trendingContainer.empty();
     console.log(results);
     for (var i = 0; i < results.length; ++i) {
         var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (results[i].poster_path || '')).attr('alt', 'Movie poster').addClass('w-60 m-4');
