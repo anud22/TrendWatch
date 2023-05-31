@@ -1,17 +1,21 @@
 
 const tmdbBaseUrl = "https://api.themoviedb.org/3";
 const youtubeBaseUrl = "https://www.googleapis.com/youtube/v3";
-const youtubeKey = "AIzaSyB32ZnHIaVNrNZOcV1kz6YioSe4kJUUnJg";
-const tmdbBearerToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZWViM2VmMWJkYzE0MWJhNTNmNzRiM2RkNDIyOTk0ZiIsInN1YiI6IjY0NmQ2Y2I5YzM1MTRjMmIwODUyM2M4ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.3NWOkz0DPb6N_jbRcWrAAf0to3995vCupxdhAB1gzLk"
+const youtubeKey = "";
+const tmdbBearerToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyZTlkYzljM2MzN2ZmM2ZiZTJiN2UxMDQwZDc3NzAwZCIsInN1YiI6IjY0NmQ2MzUwYzM1MTRjMmIwNjg4YjE3MiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.pr8RBLe8jShCpiIICdlyWgUKrvKJF08Oz_w7MYdECp8";
 const tmdbPhotosUrl = 'https://image.tmdb.org/t/p/';
 const imageSize = 'w300';
-const movieKey = "8rHNp7cPUb0";
+const movieKey = "";
 
 var submit = $('#submit');
 var play = $('#play');
 var searchInput = $('#search');
 var movieContainer = $('.movie-container');
+var trendingContainer = $('.trending-container');
 var youTubeModal = $('#youTubeModal');
+$(document).ready(function () {
+    getTopTrendingMovies();
+});
 
 var searchMovies = function (event) {
     event.preventDefault();
@@ -49,29 +53,22 @@ var displayMoviesDetails = async function (results) {
         movieContainer.append(details);
         var name = $('<h1>').html(results[i].title || results[i].name).addClass("text-white p-3 text-l font-serif");
         details.append(name);
-
-    // var textLength = Container.textContent;
-    // if (textLength.length > maxLength){
-    //    textLength = text.substring(0, maxLength) + '....';
-    //      movieContainer.textContent = text;
-    // }
-
-        var overview = $('<p>').html(results[i].overview || results[i].overview).addClass("text-white p-3 text-xs font-serif");
+        var overview = $('<p>').html(results[i].overview.substring(0, 250) + "...").addClass("text-white p-3 text-xs font-serif");
         details.append(overview);
-        var releaseDate = $('<p>').html(results[i].release_date || results[i].release_date).addClass("text-white p-3 text-xs font-serif");
+        var releaseDate = $('<p>').html('Release Date: ' + results[i].release_date).addClass("text-white p-3 text-xs font-serif");
         details.append(releaseDate);
-        var mediaType = $('<p>').html(results[i].media_type || results[i].media_type).addClass("text-white p-3 text-xs font-serif");
+        var mediaType = $('<p>').html(results[i].media_type).addClass("text-white p-3 text-xs font-serif");
         details.append(mediaType);
 
-    
 
-        var buttonContainer = $('<div>');
+
+        var buttonContainer = $('<div>').addClass('place-self-end');
         details.append(buttonContainer);
         if (results[i].id) {
             try {
                 const key = await getYoutubeVideoKey(results[i].id);
                 if (key) {
-                    var playButton = $('<div>').addClass('ml-2 text-white text-2xl').attr('id', 'playBtn');
+                    var playButton = $('<div>').addClass('flex ml-2 text-white text-2xl justify-end mr-2').attr('id', 'playBtn');
                     buttonContainer.append(playButton);
                     var playIcon = $('<i>').addClass('playIcon fas fa-play');
                     playIcon.attr('data-movie-key', key);
@@ -119,7 +116,7 @@ var playTrailer = function (event) {
             if (!data.items[0]) {
                 player.addClass('text-white font-italic');
                 player.html("Sorry Something went wrong. This video not present");
-                playButton.remove();
+                player.remove();
             }
             return (data.items[0].player.embedHtml);
         }).then(data => {
@@ -157,6 +154,30 @@ var hidePlayer = function () {
         player.remove();
     }
     youTubeModal.addClass('hidden');
+}
+
+var getTopTrendingMovies = function () {
+    var tmdbTrendingMoviesEndpoint = tmdbBaseUrl + "/trending/movie/day";
+    fetch(tmdbTrendingMoviesEndpoint,
+        {
+            headers: {
+                'Authorization': `Bearer ${tmdbBearerToken}`,
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            return response.json();
+        })
+        .then(data => {
+            displayMoviePosters(data.results);
+        });
+}
+
+var displayMoviePosters = function (results) {
+    console.log(results);
+    for (var i = 0; i < results.length; ++i) {
+        var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (results[i].poster_path || '')).attr('alt', 'Movie poster').addClass('w-60 m-4');
+        trendingContainer.append(poster);
+    }
 }
 submit.on('click', searchMovies);
 movieContainer.on('click', '#playBtn', playTrailer);
