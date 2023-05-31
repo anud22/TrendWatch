@@ -117,9 +117,9 @@ var playTrailer = function (event) {
     })
         .then(data => {
             if (!data.items[0]) {
-                player.addClass('text-white font-italic');
+                player.addClass('text-white font-italic p-5');
                 player.html("Sorry Something went wrong. This video not present");
-                player.remove();
+                playButton.remove();
             }
             return (data.items[0].player.embedHtml);
         }).then(data => {
@@ -192,7 +192,7 @@ var getTopTv = function () {
 }
 
 var displayMoviePosters = function (results) {
-   // trendingContainer.empty();
+    trendingContainer.empty();
     console.log(results);
     for (var i = 0; i < results.length; ++i) {
         var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (results[i].poster_path || '')).attr('alt', 'Movie poster').addClass('w-60 m-4');
