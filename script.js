@@ -1,11 +1,11 @@
 
 const tmdbBaseUrl = "https://api.themoviedb.org/3";
 const youtubeBaseUrl = "https://www.googleapis.com/youtube/v3";
-const youtubeKey = "AIzaSyCKdcqlaDtj8LmDrda7IVK4e15u8CXRFss";
+const youtubeKey = "";
 const tmdbBearerToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyZTlkYzljM2MzN2ZmM2ZiZTJiN2UxMDQwZDc3NzAwZCIsInN1YiI6IjY0NmQ2MzUwYzM1MTRjMmIwNjg4YjE3MiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.pr8RBLe8jShCpiIICdlyWgUKrvKJF08Oz_w7MYdECp8";
 const tmdbPhotosUrl = 'https://image.tmdb.org/t/p/';
 const imageSize = 'w300';
-const movieKey = "8rHNp7cPUb0";
+const movieKey = "";
 
 var submit = $('#submit');
 var play = $('#play');
@@ -54,20 +54,14 @@ var displayMoviesDetails = async function (results) {
         var name = $('<h1>').html(results[i].title || results[i].name).addClass("text-white p-3 text-l font-serif");
         details.append(name);
 
-    // var textLength = container.textContent;
-    // if (textLength.length > maxLength){
-    //    textLength = text.substring(0, maxLength) + '....';
-    //      movieContainer.textContent = text;
-    // }
-    
-        var overview = $('<p>').html(results[i].overview || results[i].overview).addClass("text-white p-3 text-xs font-serif");
+        var overview = $('<p>').html(results[i].overview.substring(0, 250) + "...").addClass("text-white p-3 text-xs font-serif");
         details.append(overview);
-        var releaseDate = $('<p>').html(results[i].release_date || results[i].release_date).addClass("text-white p-3 text-xs font-serif");
+        var releaseDate = $('<p>').html(results[i].release_date).addClass("text-white p-3 text-xs font-serif");
         details.append(releaseDate);
-        var mediaType = $('<p>').html(results[i].media_type || results[i].media_type).addClass("text-white p-3 text-xs font-serif");
+        var mediaType = $('<p>').html(results[i].media_type).addClass("text-white p-3 text-xs font-serif");
         details.append(mediaType);
 
-    
+
 
         var buttonContainer = $('<div>');
         details.append(buttonContainer);
@@ -75,7 +69,7 @@ var displayMoviesDetails = async function (results) {
             try {
                 const key = await getYoutubeVideoKey(results[i].id);
                 if (key) {
-                    var playButton = $('<div>').addClass('ml-2 text-white text-2xl').attr('id', 'playBtn');
+                    var playButton = $('<div>').addClass('flex ml-2 text-white text-2xl justify-end mr-2').attr('id', 'playBtn');
                     buttonContainer.append(playButton);
                     var playIcon = $('<i>').addClass('playIcon fas fa-play');
                     playIcon.attr('data-movie-key', key);
