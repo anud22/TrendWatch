@@ -57,7 +57,7 @@ var displayMoviesDetails = async function (results) {
         details.append(overview);
         var releaseDate = $('<p>').html('Release Date: ' + results[i].release_date).addClass("text-white p-3 text-xs font-serif");
         details.append(releaseDate);
-        var mediaType = $('<p>').html(results[i].media_type).addClass("text-white p-3 text-xs font-serif");
+        var mediaType = $('<p>').html('Media Type: ' + results[i].media_type).addClass("text-white p-3 text-xs font-serif");
         details.append(mediaType);
 
 
