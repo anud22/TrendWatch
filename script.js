@@ -1,8 +1,8 @@
 
 const tmdbBaseUrl = "https://api.themoviedb.org/3";
 const youtubeBaseUrl = "https://www.googleapis.com/youtube/v3";
-const youtubeKey = "AIzaSyCKdcqlaDtj8LmDrda7IVK4e15u8CXR";
-const tmdbBearerToken = "iJIUzI1NiJ9.eyJhdWQiOiIyZTlkYzljM2MzN2ZmM2ZiZTJiN2UxMDQwZDc3NzAwZCIsInN1YiI6IjY0NmQ2MzUwYzM1MTRjMmIwNjg4YjE3MiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.pr8RBLe8jShCpiIICdlyWgUKrvKJF08Oz_w7MYdECp8";
+const youtubeKey = "AIzaSyB32ZnHIaVNrNZOcV1kz6YioSe4kJUUnJg";
+const tmdbBearerToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZWViM2VmMWJkYzE0MWJhNTNmNzRiM2RkNDIyOTk0ZiIsInN1YiI6IjY0NmQ2Y2I5YzM1MTRjMmIwODUyM2M4ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.3NWOkz0DPb6N_jbRcWrAAf0to3995vCupxdhAB1gzLk"
 const tmdbPhotosUrl = 'https://image.tmdb.org/t/p/';
 const imageSize = 'w300';
 const movieKey = "8rHNp7cPUb0";
@@ -47,15 +47,31 @@ var displayMoviesDetails = async function (results) {
         movieContainer.append(poster);
         var details = $('<div>').addClass('bg-gray-800 min-w-[20rem] mr-5 flex-col');
         movieContainer.append(details);
-        var name = $('<h1>').html(results[i].title || results[i].name).addClass("text-white p-3 text-2xl font-serif");
+        var name = $('<h1>').html(results[i].title || results[i].name).addClass("text-white p-3 text-l font-serif");
         details.append(name);
+
+    // var textLength = container.textContent;
+    // if (textLength.length > maxLength){
+    //    textLength = text.substring(0, maxLength) + '....';
+    //      movieContainer.textContent = text;
+    // }
+    
+        var overview = $('<p>').html(results[i].overview || results[i].overview).addClass("text-white p-3 text-xs font-serif");
+        details.append(overview);
+        var releaseDate = $('<p>').html(results[i].release_date || results[i].release_date).addClass("text-white p-3 text-xs font-serif");
+        details.append(releaseDate);
+        var mediaType = $('<p>').html(results[i].media_type || results[i].media_type).addClass("text-white p-3 text-xs font-serif");
+        details.append(mediaType);
+
+    
+
         var buttonContainer = $('<div>');
         details.append(buttonContainer);
         if (results[i].id) {
             try {
                 const key = await getYoutubeVideoKey(results[i].id);
                 if (key) {
-                    var playButton = $('<div>').addClass('ml-2 text-white text-4xl').attr('id', 'playBtn');
+                    var playButton = $('<div>').addClass('ml-2 text-white text-2xl').attr('id', 'playBtn');
                     buttonContainer.append(playButton);
                     var playIcon = $('<i>').addClass('playIcon fas fa-play');
                     playIcon.attr('data-movie-key', key);
