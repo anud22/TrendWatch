@@ -50,12 +50,12 @@ var displayMoviesDetails = async function (results) {
         var name = $('<h1>').html(results[i].title || results[i].name).addClass("text-white p-3 text-l font-serif");
         details.append(name);
 
-    // var textLength = container.textContent;
+    // var textLength = Container.textContent;
     // if (textLength.length > maxLength){
     //    textLength = text.substring(0, maxLength) + '....';
     //      movieContainer.textContent = text;
     // }
-    
+
         var overview = $('<p>').html(results[i].overview || results[i].overview).addClass("text-white p-3 text-xs font-serif");
         details.append(overview);
         var releaseDate = $('<p>').html(results[i].release_date || results[i].release_date).addClass("text-white p-3 text-xs font-serif");
