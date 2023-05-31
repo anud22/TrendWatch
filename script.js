@@ -55,17 +55,16 @@ var displayMoviesDetails = async function (results) {
         movieContainer.append(details);
         var name = $('<h1>').html(results[i].title || results[i].name).addClass("text-white p-3 text-l font-serif");
         details.append(name);
-
         var overview = $('<p>').html(results[i].overview.substring(0, 250) + "...").addClass("text-white p-3 text-xs font-serif");
         details.append(overview);
-        var releaseDate = $('<p>').html(results[i].release_date).addClass("text-white p-3 text-xs font-serif");
+        var releaseDate = $('<p>').html('Release Date: ' + results[i].release_date).addClass("text-white p-3 text-xs font-serif");
         details.append(releaseDate);
         var mediaType = $('<p>').html(results[i].media_type).addClass("text-white p-3 text-xs font-serif");
         details.append(mediaType);
 
 
 
-        var buttonContainer = $('<div>');
+        var buttonContainer = $('<div>').addClass('place-self-end');
         details.append(buttonContainer);
         if (results[i].id) {
             try {
