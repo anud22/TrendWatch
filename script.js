@@ -15,6 +15,10 @@ var trendingContainer = $('.trending-container');
 var youTubeModal = $('#youTubeModal');
 var topMovies = $('#movies');
 var topTv = $('#tv');
+var listContainer = $('.list-container');
+var parentContainer = $('.parent-container');
+var listBtn = $('#list');
+var navElement = $('.nav-element');
 $(document).ready(function () {
     getTopTrendingMovies();
 });
@@ -51,8 +55,9 @@ var displayMoviesDetails = async function (results) {
     for (var i = 0; i < results.length; ++i) {
         var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (results[i].poster_path || '')).attr('alt', 'Movie poster').addClass('w-72');
         movieContainer.append(poster);
-        var details = $('<div>').addClass('bg-gray-800 min-w-[20rem] mr-5 flex-col');
+        var details = $('<div>').addClass('bg-gray-800 min-w-[20rem] mr-5 flex-col').attr('id', 'details');
         movieContainer.append(details);
+        details.attr('data-movie-id', results[i].id);
         var name = $('<h1>').html(results[i].title || results[i].name).addClass("text-white p-3 text-l font-serif");
         details.append(name);
         var overview = $('<p>').html(results[i].overview.substring(0, 250) + "...").addClass("text-white p-3 text-xs font-serif");
@@ -64,13 +69,15 @@ var displayMoviesDetails = async function (results) {
 
 
 
-        var buttonContainer = $('<div>').addClass('place-self-end');
+        var buttonContainer = $('<div>').addClass('flex justify-between');
         details.append(buttonContainer);
         if (results[i].id) {
+            var addToListIcon = $('<i>').addClass('fas fa-plus text-white text-3xl pl-3 hover:text-gray-500').attr('id', 'addToListBtn');
+            buttonContainer.append(addToListIcon);
             try {
                 const key = await getYoutubeVideoKey(results[i].id);
                 if (key) {
-                    var playButton = $('<div>').addClass('flex ml-2 text-white text-2xl justify-end mr-2').attr('id', 'playBtn');
+                    var playButton = $('<div>').addClass('flex ml-2 text-white text-3xl justify-end mr-2 pr-3 hover:text-gray-500').attr('id', 'playBtn');
                     buttonContainer.append(playButton);
                     var playIcon = $('<i>').addClass('playIcon fas fa-play');
                     playIcon.attr('data-movie-key', key);
@@ -127,6 +134,20 @@ var playTrailer = function (event) {
 
         })
 }
+var addToList = function (event) {
+    var addListButton = $(event.target);
+    var movieId = addListButton.closest('#details').attr('data-movie-id');
+    saveToLocalStorage(movieId);
+}
+
+var saveToLocalStorage = function (movieId) {
+    var list = JSON.parse(localStorage.getItem('listOfMovies')) || [];
+    if (!list.includes(movieId.trim())) {
+        list.push(movieId.trim());
+    }
+    localStorage.setItem('listOfMovies', JSON.stringify(list));
+}
+
 
 var getYoutubeVideoKey = function (movieId) {
     var tmdbVideoEndpoint = tmdbBaseUrl + "/movie/{movie_id}/videos";
@@ -198,9 +219,49 @@ var displayMoviePosters = function (results) {
         trendingContainer.append(poster);
     }
 }
+var displayListOfMovies = function () {
+    listContainer.removeClass('hidden');
+    parentContainer.addClass('hidden');
+    listContainer.empty();
+    var moviesListLS = JSON.parse(localStorage.getItem('listOfMovies')) || [];
+    if (moviesListLS.length === 0) {
+        var lst = $('<div>').html('No movies in your list').addClass('text-white text-5xl')
+        listContainer.append(lst);
+        return;
+    }
+    $.each(moviesListLS, function (index, movieId) {
+        var tmdbMovieDetailsEndpoint = tmdbBaseUrl + "/movie/{movie_id}";
+        tmdbMovieDetailsEndpoint = tmdbMovieDetailsEndpoint.replace("{movie_id}", movieId);
+        fetch(tmdbMovieDetailsEndpoint,
+            {
+                headers: {
+                    'Authorization': `Bearer ${tmdbBearerToken}`,
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                return response.json();
+
+            })
+            .then(data => {
+                var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (data.poster_path || '')).attr('alt', 'Movie poster').addClass('w-72 flex-item');
+                listContainer.append(poster);
+
+            });
+    })
+}
+var hideListContainer = function () {
+    listContainer.addClass('hidden');
+    parentContainer.removeClass('hidden');
+}
+
 submit.on('click', searchMovies);
 movieContainer.on('click', '#playBtn', playTrailer);
 youTubeModal.on('click', '#closeBtn', hidePlayer);
 topMovies.on('click', getTopTrendingMovies);
 topTv.on('click', getTopTv);
+movieContainer.on('click', '.fa-plus', addToList);
+listBtn.on('click', displayListOfMovies);
+navElement.on('click', hideListContainer);
+
+
 
