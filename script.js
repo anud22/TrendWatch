@@ -65,8 +65,12 @@ var displayMoviesDetails = async function (results) {
         details.append(overview);
         var releaseDate = $('<p>').html('Release Date: ' + results[i].release_date).addClass("text-white p-3 text-xs font-serif");
         details.append(releaseDate);
-        var mediaType = $('<p>').html(results[i].media_type).addClass("text-white p-3 text-xs font-serif");
+        var mediaType = $('<p>').html('Media Type: ' + capitalizeFirstLetter(results[i].media_type)).addClass("text-white p-3 text-xs font-serif");
         details.append(mediaType);
+        
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+          }
 
 
 
