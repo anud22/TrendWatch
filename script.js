@@ -15,6 +15,7 @@ var trendingContainer = $('.trending-container');
 var youTubeModal = $('#youTubeModal');
 var topMovies = $('#movies');
 var topTv = $('#tv');
+var listParentContainer = $('.list-parent');
 var listContainer = $('.list-container');
 var parentContainer = $('.parent-container');
 var listBtn = $('#list');
@@ -220,7 +221,7 @@ var displayMoviePosters = function (results) {
     }
 }
 var displayListOfMovies = function () {
-    listContainer.removeClass('hidden');
+    listParentContainer.removeClass('hidden');
     parentContainer.addClass('hidden');
     listContainer.empty();
     var moviesListLS = JSON.parse(localStorage.getItem('listOfMovies')) || [];
@@ -243,14 +244,15 @@ var displayListOfMovies = function () {
 
             })
             .then(data => {
-                var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (data.poster_path || '')).attr('alt', 'Movie poster').addClass('w-72 flex-item');
+                var container = $('<div>').addClass('flex ');
+                var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (data.poster_path || '')).attr('alt', 'Movie poster').addClass('w-72 flex-item p-2 border border-red-500');
                 listContainer.append(poster);
 
             });
     })
 }
 var hideListContainer = function () {
-    listContainer.addClass('hidden');
+    listParentContainer.addClass('hidden');
     parentContainer.removeClass('hidden');
 }
 
