@@ -13,6 +13,8 @@ var searchInput = $('#search');
 var movieContainer = $('.movie-container');
 var trendingContainer = $('.trending-container');
 var youTubeModal = $('#youTubeModal');
+var hoverButton = $('.hoverButton');
+
 $(document).ready(function () {
     getTopTrendingMovies();
 });
@@ -53,14 +55,16 @@ var displayMoviesDetails = async function (results) {
         movieContainer.append(details);
         var name = $('<h1>').html(results[i].title || results[i].name).addClass("text-white p-3 text-l font-serif");
         details.append(name);
-        var overview = $('<p>').html(results[i].overview.substring(0, 250) + "...").addClass("text-white p-3 text-xs font-serif");
+        var overview = $('<p>').html(results[i].overview.substring(0, 350) + "...").addClass("text-white p-3 text-xs font-serif");
         details.append(overview);
         var releaseDate = $('<p>').html('Release Date: ' + results[i].release_date).addClass("text-white p-3 text-xs font-serif");
         details.append(releaseDate);
-        var mediaType = $('<p>').html('Media Type: ' + results[i].media_type).addClass("text-white p-3 text-xs font-serif");
+        var mediaType = $('<p>').html('Media Type: ' + capitalizeFirstLetter(results[i].media_type)).addClass("text-white p-3 text-xs font-serif");
         details.append(mediaType);
-
-
+        
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+          }
 
         var buttonContainer = $('<div>').addClass('place-self-end');
         details.append(buttonContainer);
@@ -81,6 +85,8 @@ var displayMoviesDetails = async function (results) {
         }
     }
 }
+
+
 
 var sortMoviesByReleaseDate = function (movies) {
     return movies.sort((a, b) => {
@@ -179,6 +185,8 @@ var displayMoviePosters = function (results) {
         trendingContainer.append(poster);
     }
 }
+
+
 submit.on('click', searchMovies);
 movieContainer.on('click', '#playBtn', playTrailer);
 youTubeModal.on('click', '#closeBtn', hidePlayer);
