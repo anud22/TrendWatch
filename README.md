@@ -10,10 +10,10 @@
    Then: They request information about a movie through the search engine
    So: They get directed to all the information gathered on the movie
 ### Images 
-![ucla_coding_bootcamp-12_720](https://github.com/anud22/TrendWatch/assets/130356754/723da1a6-fc63-4787-b464-24f7841a6036)
-![image_2023-05-23_202130584](https://github.com/anud22/TrendWatch/assets/130356754/b121a1dd-f33e-4b02-a508-ac2404a20052)
+![Trendwatchers](https://github.com/anud22/TrendWatch/assets/130356754/9c5eceff-889d-41c7-ba9d-f1141a63de0b)
+![Screenshot 2023-06-01 212026](https://github.com/anud22/TrendWatch/assets/130356754/01945b45-b57f-4b01-b236-54bf2a7cb87b)
 ## Authors
-* Arron Ko
+* Aaron Ko
 * Anu Dilbagi
 * Juan De La Cruz
 
