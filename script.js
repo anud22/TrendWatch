@@ -19,6 +19,7 @@ var listParentContainer = $('.list-parent');
 var listContainer = $('.list-container');
 var parentContainer = $('.parent-container');
 var listBtn = $('#list');
+var searchNav = $('#searchA');
 var navElement = $('.nav-element');
 $(document).ready(function () {
     getTopTrendingMovies();
@@ -26,6 +27,11 @@ $(document).ready(function () {
 
 var searchMovies = function (event) {
     event.preventDefault();
+    if (searchInput.attr('class').includes('w-0')) {
+        searchInput.removeClass('w-0 hidden');
+        searchInput.addClass('active');
+        return;
+    }
     var searchedTxt = searchInput.val().trim();
     var tmdbSearchEndpoint = tmdbBaseUrl + "/search/multi";
     fetch(tmdbSearchEndpoint + '?query=' + searchedTxt + '&page=1&language=en-US',
@@ -48,33 +54,35 @@ var searchMovies = function (event) {
 var displayMoviesDetails = async function (results) {
     movieContainer.empty();
     if (results.length == 0) {
-        var details = $('<span>').addClass('text-white text-5xl m-30 p-30').html("No movies found");
+        var details = $('<span>').addClass('text-white text-3xl ml-30 p-10').html("No movies found");
         movieContainer.append(details);
         return;
     }
     results = sortMoviesByReleaseDate(results);
+    searchInput.addClass('w-0');
+    searchInput.addClass('hidden');
     console.log(results);
     for (var i = 0; i < results.length; ++i) {
         if (results[i].media_type === "person") {
             continue;
         }
-        var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (results[i].poster_path || '')).attr('alt', 'Movie poster').addClass('w-72');
+        var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (results[i].poster_path || '')).attr('alt', 'Movie poster').addClass('hover:scale-150 transition-transform duration-300');
         movieContainer.append(poster);
-        var details = $('<div>').addClass('bg-gray-800 min-w-[20rem] mr-5 flex-col').attr('id', 'details');
+        var details = $('<div>').addClass('bg-gray-800 min-w-[20rem] mr-5 flex-col hover:scale-105 transition-transform duration-300').attr('id', 'details');
         movieContainer.append(details);
         details.attr('data-movie-id', results[i].media_type.substring(0, 1) + results[i].id);
         var name = $('<h1>').html(results[i].title || results[i].name).addClass("text-white p-3 text-l font-serif");
         details.append(name);
-        var overview = $('<p>').html(results[i].overview.substring(0, 250) + "...").addClass("text-white p-3 text-xs font-serif");
+        var overview = $('<p>').html(results[i].overview.substring(0, 250) + "...").addClass("text-white p-3 text-xs font-serif min-h-[10rem]");
         details.append(overview);
         var releaseDate = $('<p>').html('Release Date: ' + results[i].release_date).addClass("text-white p-3 text-xs font-serif");
         details.append(releaseDate);
         var mediaType = $('<p>').html('Media Type: ' + capitalizeFirstLetter(results[i].media_type)).addClass("text-white p-3 text-xs font-serif");
         details.append(mediaType);
-        
+
         function capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
-          }
+        }
 
 
 
@@ -277,7 +285,7 @@ var displayListOfMovies = function () {
                 var removeFromListIcon = $('<i>').addClass('fas fa-minus text-white text-3xl pl-3 mr-8 hover:text-gray-500').attr('id', 'removeFromListBtn');
                 removeFromListIcon.attr('data-movie-id', data.id);
                 container.append(removeFromListIcon);
-                var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (data.poster_path || '')).attr('alt', 'Movie poster').addClass('w-72 flex-item p-2 border border-red-500');
+                var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (data.poster_path || '')).attr('alt', 'Movie poster').addClass('flex-item p-2 border border-red-500');
                 container.append(poster);
 
             });
@@ -297,6 +305,10 @@ movieContainer.on('click', '.fa-plus', addToList);
 listContainer.on('click', '.fa-minus', removeFromList);
 listBtn.on('click', displayListOfMovies);
 navElement.on('click', hideListContainer);
+searchNav.on('click', function(){
+    searchInput.removeClass('w-0 hidden');
+    searchInput.addClass('active');
+})
 
 
 

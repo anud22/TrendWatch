@@ -1,0 +1,6 @@
+.search-input{
+  transition: width 0.8s ease;
+}
+.active {
+  width: 200px;
+}
