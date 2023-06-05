@@ -73,7 +73,7 @@ var displayMoviesDetails = async function (results) {
         details.attr('data-movie-id', results[i].media_type.substring(0, 1) + results[i].id);
         var name = $('<h1>').html(results[i].title || results[i].name).addClass("text-white md:p-3 min-[280px]:p-0 min-[280px]:text-[0.5rem] md:text-sm font-serif");
         details.append(name);
-        var overview = $('<p>').html(results[i].overview.substring(0, 250) + "...").addClass("text-white md:p-3 min-[280px]:p-1 min-[280px]:text-[0.5rem] md:text-xs font-serif min-[280px]:min-h-[5rem] min-h-[10rem]");
+        var overview = $('<p>').html(results[i].overview.substring(0, 250) + "...").addClass("text-white md:p-3 min-[280px]:p-1 min-[280px]:text-[0.5rem] md:text-xs font-serif min-[280px]:min-h-[5rem] md:min-h-[8rem]");
         details.append(overview);
         var releaseDate = $('<p>').html('Release Date: ' + results[i].release_date).addClass("text-white md:p-3 min-[280px]:p-1 min-[280px]:text-[0.5rem] md:text-xs font-serif");
         details.append(releaseDate);
@@ -92,7 +92,7 @@ var displayMoviesDetails = async function (results) {
             try {
                 const key = await getYoutubeVideoKey(results[i].id);
                 if (key) {
-                    var playButton = $('<div>').addClass('flex ml-2 text-white min-[280px]:text-sm text-3xl justify-end mr-2 pr-3 hover:text-gray-500').attr('id', 'playBtn');
+                    var playButton = $('<div>').addClass('flex ml-2 text-white min-[280px]:text-sm md:text-3xl justify-end mr-2 pr-3 hover:text-gray-500').attr('id', 'playBtn');
                     buttonContainer.append(playButton);
                     var playIcon = $('<i>').addClass('playIcon fas fa-play');
                     playIcon.attr('data-movie-key', key);
