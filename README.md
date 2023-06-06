@@ -8,7 +8,7 @@
 ## User Story
    If the User: Accesses our Webpage
    Then: They request information about a movie through the search engine
-   So: They get directed to all the information gathered on the movie
+   So: They get directed to all the information gathered on the movie 
 ### Images 
 ![Trendwatchers](https://github.com/anud22/TrendWatch/assets/130356754/9c5eceff-889d-41c7-ba9d-f1141a63de0b)
 ![Screenshot 2023-06-01 212026](https://github.com/anud22/TrendWatch/assets/130356754/01945b45-b57f-4b01-b236-54bf2a7cb87b)
