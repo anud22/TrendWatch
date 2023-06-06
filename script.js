@@ -68,14 +68,14 @@ var displayMoviesDetails = async function (results) {
         }
         var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (results[i].poster_path || '')).attr('alt', 'Movie poster').addClass('hover:scale-150 transition-transform duration-300');
         movieContainer.append(poster);
-        var details = $('<div>').addClass('bg-gray-800 min-[280px]:min-w-[10rem] md:min-w-[22rem] mr-5 flex-col hover:scale-105 transition-transform duration-300').attr('id', 'details');
+        var details = $('<div>').addClass('bg-gray-800 min-[280px]:min-w-[10rem] md:min-w-[25rem] mr-5 flex-col hover:scale-105 transition-transform duration-300').attr('id', 'details');
         movieContainer.append(details);
         details.attr('data-movie-id', results[i].media_type.substring(0, 1) + results[i].id);
-        var name = $('<h1>').html(results[i].title || results[i].name).addClass("text-white md:p-3 min-[280px]:p-0 min-[280px]:text-[0.5rem] md:text-sm font-serif");
+        var name = $('<h1>').html(results[i].title || results[i].name).addClass("text-white md:p-2 min-[280px]:p-0 min-[280px]:text-[0.5rem] md:text-sm font-serif");
         details.append(name);
-        var overview = $('<p>').html(results[i].overview.substring(0, 250) + "...").addClass("text-white md:p-3 min-[280px]:p-1 min-[280px]:text-[0.5rem] md:text-xs font-serif min-[280px]:min-h-[5rem] md:min-h-[8rem]");
+        var overview = $('<p>').html(results[i].overview.substring(0, 250) + "...").addClass("text-white md:p-2 min-[280px]:p-1 min-[280px]:text-[0.5rem] md:text-xs font-serif min-[280px]:min-h-[5rem] md:min-h-[8rem]");
         details.append(overview);
-        var releaseDate = $('<p>').html('Release Date: ' + results[i].release_date).addClass("text-white md:p-3 min-[280px]:p-1 min-[280px]:text-[0.5rem] md:text-xs font-serif");
+        var releaseDate = $('<p>').html('Release Date: ' + results[i].release_date).addClass("text-white md:p-2 min-[280px]:p-1 min-[280px]:text-[0.5rem] md:text-xs font-serif");
         details.append(releaseDate);
         var mediaType = $('<p>').html('Media Type: ' + capitalizeFirstLetter(results[i].media_type)).addClass("text-white md:p-2 min-[280px]:p-1 min-[280px]:text-[0.5rem] md:text-xs mb-5 font-serif");
         details.append(mediaType);
