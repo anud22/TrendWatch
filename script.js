@@ -75,9 +75,9 @@ var displayMoviesDetails = async function (results) {
         details.append(name);
         var overview = $('<p>').html(results[i].overview.substring(0, 250) + "...").addClass("text-white md:p-2 min-[280px]:p-1 min-[280px]:text-[0.5rem] md:text-xs font-serif min-[280px]:min-h-[5rem] md:min-h-[8rem]");
         details.append(overview);
-        var releaseDate = $('<p>').html('Release Date: ' + results[i].release_date).addClass("text-white md:p-2 min-[280px]:p-1 min-[280px]:text-[0.5rem] md:text-xs font-serif");
+        var releaseDate = $('<p>').html('Release Date: ' + results[i].release_date).addClass("text-white md:p-1 min-[280px]:p-1 min-[280px]:text-[0.5rem] md:text-xs font-serif");
         details.append(releaseDate);
-        var mediaType = $('<p>').html('Media Type: ' + capitalizeFirstLetter(results[i].media_type)).addClass("text-white md:p-2 min-[280px]:p-1 min-[280px]:text-[0.5rem] md:text-xs mb-5 font-serif");
+        var mediaType = $('<p>').html('Media Type: ' + capitalizeFirstLetter(results[i].media_type)).addClass("text-white md:p-1 min-[280px]:p-1 min-[280px]:text-[0.5rem] md:text-xs mb-5 font-serif");
         details.append(mediaType);
 
         function capitalizeFirstLetter(string) {
