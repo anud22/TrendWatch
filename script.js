@@ -21,17 +21,13 @@ var parentContainer = $('.parent-container');
 var listBtn = $('#list');
 var searchNav = $('#searchA');
 var navElement = $('.nav-element');
+var trendSpan = $('.trend');
 $(document).ready(function () {
     getTopTrendingMovies();
 });
 
 var searchMovies = function (event) {
     event.preventDefault();
-    if (searchInput.attr('class').includes('w-0')) {
-        searchInput.removeClass('w-0 hidden');
-        searchInput.addClass('active');
-        return;
-    }
     var searchedTxt = searchInput.val().trim();
     var tmdbSearchEndpoint = tmdbBaseUrl + "/search/multi";
     fetch(tmdbSearchEndpoint + '?query=' + searchedTxt + '&page=1&language=en-US',
@@ -59,8 +55,6 @@ var displayMoviesDetails = async function (results) {
         return;
     }
     results = sortMoviesByReleaseDate(results);
-    searchInput.addClass('w-0');
-    searchInput.addClass('hidden');
     console.log(results);
     for (var i = 0; i < results.length; ++i) {
         if (results[i].media_type === "person") {
@@ -220,6 +214,7 @@ var hidePlayer = function () {
 }
 
 var getTopTrendingMovies = function () {
+    trendSpan.html('List Of Trending movies');
     var tmdbTrendingMoviesEndpoint = tmdbBaseUrl + "/trending/movie/day";
     fetch(tmdbTrendingMoviesEndpoint,
         {
@@ -236,6 +231,7 @@ var getTopTrendingMovies = function () {
 }
 
 var getTopTv = function () {
+    trendSpan.html('List Of Top rated TV shows');
     var tmdbTopRatedTvEndpoint = tmdbBaseUrl + "/tv/top_rated?language=en-US&page=1";
     fetch(tmdbTopRatedTvEndpoint,
         {
@@ -311,10 +307,3 @@ movieContainer.on('click', '.fa-plus', addToList);
 listContainer.on('click', '.fa-minus', removeFromList);
 listBtn.on('click', displayListOfMovies);
 navElement.on('click', hideListContainer);
-searchNav.on('click', function () {
-    searchInput.removeClass('w-0 hidden');
-    searchInput.addClass('active');
-})
-
-
-
