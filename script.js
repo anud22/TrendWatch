@@ -22,6 +22,8 @@ var listBtn = $('#list');
 var searchNav = $('#searchA');
 var navElement = $('.nav-element');
 var trendSpan = $('.trend');
+var detailsContainer = $('.details-container');
+
 $(document).ready(function () {
     getTopTrendingMovies();
 });
@@ -248,13 +250,37 @@ var getTopTv = function () {
 }
 
 var displayMoviePosters = function (results) {
+    console.log("results", results);
     trendingContainer.empty();
     console.log(results);
     for (var i = 0; i < results.length; ++i) {
         var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (results[i].poster_path || '')).attr('alt', 'Movie poster').addClass('w-60 m-4');
+        poster.attr('data-overview', results[i].overview);
+        poster.attr('data-title', results[i].title);
         trendingContainer.append(poster);
     }
 }
+
+var displayOverview = function (event) {
+    detailsContainer.empty();
+    var poster = $(event.target);
+    var posterPosition = poster.offset();
+    var overviewLength = poster.attr('data-overview').length;
+    var topOffset = overviewLength > 250 ? 180 : 120;
+    var topPosition = posterPosition.top - topOffset + 'px';
+    var leftPosition = posterPosition.left + window.scrollX + 'px';
+    poster.addClass("border border-white");
+    detailsContainer.addClass("relative");
+    var details = $('<div class="flex w-70 flex-col flex-wrap mt-10 text-white text-2xs bg-gray-800 max-w-xl absolute">');
+    details.css({ top: topPosition, left: leftPosition });
+    detailsContainer.append(details);
+    var titleSpan = $('<span class="p-1">' + poster.attr('data-title') + '</span>');
+    details.append(titleSpan);
+    var overview = overviewLength > 250 ? poster.attr('data-overview').substring(0, 250) + "..." : poster.attr('data-overview');
+    var overviewSpan = $('<span class="p-1">' + overview + '</span>');
+    details.append(overviewSpan);
+}
+
 var displayListOfMovies = function () {
     listParentContainer.removeClass('hidden');
     parentContainer.addClass('hidden');
@@ -287,7 +313,7 @@ var displayListOfMovies = function () {
                 var removeFromListIcon = $('<i>').addClass('fas fa-minus text-white text-sm md:text-3xl md:pl-3 mr-2 md:mr-8 hover:text-gray-500').attr('id', 'removeFromListBtn');
                 removeFromListIcon.attr('data-movie-id', data.id);
                 container.append(removeFromListIcon);
-                var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (data.poster_path || '')).attr('alt', 'Movie poster').addClass('flex-item p-2 border border-red-500');
+                var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (data.poster_path || '')).attr('alt', 'Movie poster').addClass('flex-item p-2 border border-red-500') .css('height', '270px');;
                 container.append(poster);
 
             });
@@ -296,6 +322,13 @@ var displayListOfMovies = function () {
 var hideListContainer = function () {
     listParentContainer.addClass('hidden');
     parentContainer.removeClass('hidden');
+}
+
+var resetPoster = function (event) {
+    var poster = $(event.target);
+    poster.removeClass("border border-white");
+    detailsContainer.removeClass("relative");
+    detailsContainer.empty();
 }
 
 submit.on('click', searchMovies);
@@ -307,3 +340,5 @@ movieContainer.on('click', '.fa-plus', addToList);
 listContainer.on('click', '.fa-minus', removeFromList);
 listBtn.on('click', displayListOfMovies);
 navElement.on('click', hideListContainer);
+trendingContainer.on('mouseenter', 'img', displayOverview);
+trendingContainer.on('mouseleave', 'img', resetPoster);
