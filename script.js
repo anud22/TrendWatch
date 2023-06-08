@@ -22,6 +22,8 @@ var listBtn = $('#list');
 var searchNav = $('#searchA');
 var navElement = $('.nav-element');
 var trendSpan = $('.trend');
+var detailsContainer = $('.details-container');
+
 $(document).ready(function () {
     getTopTrendingMovies();
 });
@@ -231,6 +233,8 @@ var getTopTrendingMovies = function () {
 }
 
 var getTopTv = function () {
+    alert('k');
+    
     trendSpan.html('List Of Top rated TV shows');
     var tmdbTopRatedTvEndpoint = tmdbBaseUrl + "/tv/top_rated?language=en-US&page=1";
     fetch(tmdbTopRatedTvEndpoint,
@@ -248,13 +252,36 @@ var getTopTv = function () {
 }
 
 var displayMoviePosters = function (results) {
+    console.log("results", results);
     trendingContainer.empty();
     console.log(results);
     for (var i = 0; i < results.length; ++i) {
         var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (results[i].poster_path || '')).attr('alt', 'Movie poster').addClass('w-60 m-4');
+        poster.attr('data-overview', results[i].overview);
+        poster.attr('data-title', results[i].title);
         trendingContainer.append(poster);
     }
 }
+
+var displayOverview = function (event) {
+    detailsContainer.empty();
+    var poster = $(event.target);
+    var posterPosition = poster.offset();
+    var overviewLength = poster.attr('data-overview').length;
+    var topOffset = overviewLength > 250 ? 180 : 110;
+    var topPosition = posterPosition.top - topOffset + 'px';
+    var leftPosition = posterPosition.left + window.scrollX + 'px';
+    poster.addClass("border border-white");
+    var details = $('<div class="flex w-70 flex-col flex-wrap mt-10 text-white text-2xs bg-gray-800 max-w-xl absolute">');
+    details.css({ top: topPosition, left: leftPosition });
+    detailsContainer.append(details);
+    var titleSpan = $('<span class="p-1">' + poster.attr('data-title') + '</span>');
+    details.append(titleSpan);
+    var overview = overviewLength > 250 ? poster.attr('data-overview').substring(0, 250) + "..." : poster.attr('data-overview');
+    var overviewSpan = $('<span class="p-1">' + overview + '</span>');
+    details.append(overviewSpan);
+}
+
 var displayListOfMovies = function () {
     listParentContainer.removeClass('hidden');
     parentContainer.addClass('hidden');
@@ -298,6 +325,12 @@ var hideListContainer = function () {
     parentContainer.removeClass('hidden');
 }
 
+var resetPoster = function (event) {
+    var poster = $(event.target);
+    poster.removeClass("border border-white");
+    detailsContainer.empty();
+}
+
 submit.on('click', searchMovies);
 movieContainer.on('click', '#playBtn', playTrailer);
 youTubeModal.on('click', '#closeBtn', hidePlayer);
@@ -307,3 +340,5 @@ movieContainer.on('click', '.fa-plus', addToList);
 listContainer.on('click', '.fa-minus', removeFromList);
 listBtn.on('click', displayListOfMovies);
 navElement.on('click', hideListContainer);
+//trendingContainer.on('mouseenter', 'img', displayOverview);
+//trendingContainer.on('mouseleave', 'img', resetPoster);
