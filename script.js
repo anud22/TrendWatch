@@ -233,8 +233,6 @@ var getTopTrendingMovies = function () {
 }
 
 var getTopTv = function () {
-    alert('k');
-    
     trendSpan.html('List Of Top rated TV shows');
     var tmdbTopRatedTvEndpoint = tmdbBaseUrl + "/tv/top_rated?language=en-US&page=1";
     fetch(tmdbTopRatedTvEndpoint,
@@ -268,10 +266,11 @@ var displayOverview = function (event) {
     var poster = $(event.target);
     var posterPosition = poster.offset();
     var overviewLength = poster.attr('data-overview').length;
-    var topOffset = overviewLength > 250 ? 180 : 110;
+    var topOffset = overviewLength > 250 ? 180 : 120;
     var topPosition = posterPosition.top - topOffset + 'px';
     var leftPosition = posterPosition.left + window.scrollX + 'px';
     poster.addClass("border border-white");
+    detailsContainer.addClass("relative");
     var details = $('<div class="flex w-70 flex-col flex-wrap mt-10 text-white text-2xs bg-gray-800 max-w-xl absolute">');
     details.css({ top: topPosition, left: leftPosition });
     detailsContainer.append(details);
@@ -314,7 +313,7 @@ var displayListOfMovies = function () {
                 var removeFromListIcon = $('<i>').addClass('fas fa-minus text-white text-sm md:text-3xl md:pl-3 mr-2 md:mr-8 hover:text-gray-500').attr('id', 'removeFromListBtn');
                 removeFromListIcon.attr('data-movie-id', data.id);
                 container.append(removeFromListIcon);
-                var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (data.poster_path || '')).attr('alt', 'Movie poster').addClass('flex-item p-2 border border-red-500');
+                var poster = $('<img>').attr('src', tmdbPhotosUrl + imageSize + (data.poster_path || '')).attr('alt', 'Movie poster').addClass('flex-item p-2 border border-red-500') .css('height', '270px');;
                 container.append(poster);
 
             });
@@ -328,6 +327,7 @@ var hideListContainer = function () {
 var resetPoster = function (event) {
     var poster = $(event.target);
     poster.removeClass("border border-white");
+    detailsContainer.removeClass("relative");
     detailsContainer.empty();
 }
 
@@ -340,5 +340,5 @@ movieContainer.on('click', '.fa-plus', addToList);
 listContainer.on('click', '.fa-minus', removeFromList);
 listBtn.on('click', displayListOfMovies);
 navElement.on('click', hideListContainer);
-//trendingContainer.on('mouseenter', 'img', displayOverview);
-//trendingContainer.on('mouseleave', 'img', resetPoster);
+trendingContainer.on('mouseenter', 'img', displayOverview);
+trendingContainer.on('mouseleave', 'img', resetPoster);
