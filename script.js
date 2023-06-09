@@ -216,7 +216,7 @@ var hidePlayer = function () {
 }
 
 var getTopTrendingMovies = function () {
-    trendSpan.html('List Of Trending movies');
+    trendSpan.html('Trending Movies');
     var tmdbTrendingMoviesEndpoint = tmdbBaseUrl + "/trending/movie/day";
     fetch(tmdbTrendingMoviesEndpoint,
         {
@@ -233,7 +233,7 @@ var getTopTrendingMovies = function () {
 }
 
 var getTopTv = function () {
-    trendSpan.html('List Of Top rated TV shows');
+    trendSpan.html('Top Rated TV Shows');
     var tmdbTopRatedTvEndpoint = tmdbBaseUrl + "/tv/top_rated?language=en-US&page=1";
     fetch(tmdbTopRatedTvEndpoint,
         {
